@@ -4,7 +4,7 @@
 int main() {
     int r, h;
     float a;
-    printf("Aire d'un cone : A = 1/3 * B * H, B = PI * R²\n");
+    printf("Aire d'un cone : A = 1/3 * B * H, B = PI * RË›\n");
     printf("PI = %.4f\n", PI);
     printf("R = ");
     scanf("%d", &r);
