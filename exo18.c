@@ -7,6 +7,6 @@ int main() {
     for(i=1; PI*PI/6-s>=0.001; i++) {
         s+=1./(i*i);
     }
-    printf("Somme des 1/n^2 à 10^-3 pres = %.3f", s);
+    printf("Somme des 1/n^2 Ã  10^-3 pres = %.3f", s);
     return 0;
 }
