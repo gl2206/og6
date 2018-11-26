@@ -16,7 +16,7 @@ typedef struct student
     struct student *suivant;
 } etudiant;
 
-void sgets(char *s, int l)
+void cgets(char *s, int l)
 {
     int i;
     char c;
@@ -39,16 +39,16 @@ etudiant *getDataEtudiant(enum Mode mode)
     char str[5];
     etudiant *e = (etudiant*) malloc(sizeof(etudiant));
     printf("Nom de l'etudiant : ");
-    sgets(e->nom, 20);
+    cgets(e->nom, 20);
     printf("Prenom de l'etudiant : ");
-    sgets(e->prenom, 100);
+    cgets(e->prenom, 100);
     printf("Identifiant de l'etudiant : ");
     scanf("%d", &e->identifiant);
     printf("Specialite de l'etudiant : ");
-    sgets(e->specialite, 4);
+    cgets(e->specialite, 4);
     if(mode == normal) for(i = 0; i < NB_UV_MAX; i++) {
         printf("UV %d de l'etudiant : ", i+1);
-        sgets(str, 5);
+        cgets(str, 5);
         if(!strcmp(str, "----")) for(; i < NB_UV_MAX; i++) strcpy(e->UV[i], "----");
         else strcpy(e->UV[i], str);
     }
