@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define NB_UV_MAX 3
+#define NB_UV_MAX 6
+
+enum Mode {normal, reduit};
 
 typedef struct student
 {
@@ -29,8 +31,10 @@ void sgets(char *s, int l)
     s[i] = '\0';
 }
 
-etudiant *getDataEtudiant()
+etudiant *getDataEtudiant(enum Mode mode)
 {
+    if(mode == normal) printf("\nCreation d'un nouvel etudiant :\n");
+    else if(mode == reduit) printf("\nSuppression d'un etudiant :\n");
     int i;
     char str[5];
     etudiant *e = (etudiant*) malloc(sizeof(etudiant));
@@ -42,7 +46,7 @@ etudiant *getDataEtudiant()
     scanf("%d", &e->identifiant);
     printf("Specialite de l'etudiant : ");
     sgets(e->specialite, 4);
-    for(i = 0; i < NB_UV_MAX; i++) {
+    if(mode == normal) for(i = 0; i < NB_UV_MAX; i++) {
         printf("UV %d de l'etudiant : ", i+1);
         sgets(str, 5);
         if(!strcmp(str, "----")) for(; i < NB_UV_MAX; i++) strcpy(e->UV[i], "----");
@@ -54,13 +58,13 @@ etudiant *getDataEtudiant()
 
 etudiant *creerListe(int nbEtudiant)
 {
-    if(nbEtudiant < 1)
-        return NULL;
+    if(nbEtudiant < 1) return NULL;
     int i;
     etudiant *L, *temp1, *temp2;
+    printf("\nCreation d'une liste de %d etudiant(s) :\n", nbEtudiant);
     for(i = 0; i < nbEtudiant; i++)
     {
-        temp2 = getDataEtudiant();
+        temp2 = getDataEtudiant(normal);
         if (i==0)
         {
             L=temp2;
@@ -75,16 +79,14 @@ etudiant *creerListe(int nbEtudiant)
     return L;
 }
 
-void supprimerListe(etudiant *L) {
-    etudiant *ptr = L, *precedent = L;
-    while(ptr != NULL) {
-        precedent = ptr;
-        ptr = ptr->suivant;
-        free(precedent);
-    }
+etudiant *creerNouvelleListe() {
+    int n;
+    printf("\nCreation d'une liste d'etudiants :\n");
+    printf("(int)$ ");
+    scanf("%d", &n);
+    return creerListe(n);
 }
 
-/*
 int compterEtudiant(etudiant *L)
 {
     etudiant *e = L;
@@ -97,6 +99,41 @@ int compterEtudiant(etudiant *L)
     return cpt;
 }
 
+void printEtudiant(etudiant *e)
+{
+    int i;
+    printf("\t-----\n");
+    printf("Nom de l'etudiant : %s\n", e->nom);
+    printf("Prenom de l'etudiant : %s\n", e->prenom);
+    printf("Identifiant de l'etudiant : %05d\n", e->identifiant);
+    printf("Specialite de l'etudiant : %s\n", e->specialite);
+    for(i = 0; i < NB_UV_MAX; i++) printf("UV %d de l'etudiant : %s\n", i+1, e->UV[i]);
+}
+
+void printListeEtudiant(etudiant *L)
+{
+    etudiant *e = L;
+    int cpt = compterEtudiant(L);
+    printf("\nAffichage de la liste (%d etudiant(s)): \n", cpt);
+    if(cpt == 0) printf("\nListe vide !\n");
+    else while(e != NULL)
+    {
+        printEtudiant(e);
+        e = e->suivant;
+    }
+    printf("\n\t*****\n");
+}
+
+void supprimerListe(etudiant *L) {
+    etudiant *ptr = L, *precedent = L;
+    while(ptr != NULL) {
+        precedent = ptr;
+        ptr = ptr->suivant;
+        free(precedent);
+    }
+}
+
+/*
 int dernierElement(etudiant *e)
 {
     if(e != NULL && e->suivant == NULL)
@@ -132,7 +169,7 @@ void trier(etudiant **L)
             apres = e->suivant;
             if(strcmp(e->nom, apres->nom) > 0)
             {
-                printf("inverser %s <-> %s\n", e->nom, apres->nom);
+                printf("inversion %s <-> %s\n", e->nom, apres->nom);
                 e->suivant = apres->suivant;
                 apres->suivant = e;
                 if(e == *L)
@@ -156,7 +193,7 @@ int insererEtudiant(etudiant **L, etudiant *e)
     }
     while(ptr != NULL)
     {
-        if(!strcmp(ptr->nom, e->nom)/* && !strcmp(ptr->prenom, e->prenom) && ptr->identifiant == e->identifiant && !strcmp(ptr->specialite, e->specialite)*/) return 0;
+        if(!strcmp(ptr->nom, e->nom) && !strcmp(ptr->prenom, e->prenom) && ptr->identifiant == e->identifiant && !strcmp(ptr->specialite, e->specialite)) return 0;
         precedent = ptr;
         ptr = ptr->suivant;
     }
@@ -170,8 +207,10 @@ int supprimerEtudiant(etudiant **L, etudiant *e)
     etudiant *ptr = *L, *precedent = *L;
     while(ptr != NULL)
     {
-        if(!strcmp(ptr->nom, e->nom)/* && !strcmp(ptr->prenom, e->prenom) && ptr->identifiant == e->identifiant && !strcmp(ptr->specialite, e->specialite)*/)
+        if(!strcmp(ptr->nom, e->nom) && !strcmp(ptr->prenom, e->prenom) && ptr->identifiant == e->identifiant && !strcmp(ptr->specialite, e->specialite))
         {
+            printf("Etudiant a supprimer :\n");
+            printEtudiant(ptr);
             if(ptr == *L)
                 *L = ptr->suivant;
             else
@@ -210,42 +249,16 @@ void recupererSelonSpecialite(etudiant *L, etudiant **GSI, etudiant **GSM, etudi
     }
 }
 
-void printEtudiant(etudiant *e)
-{
-    int i;
-    printf("\t-----\n");
-    printf("Nom de l'etudiant : %s\n", e->nom);
-    printf("Prenom de l'etudiant : %s\n", e->prenom);
-    printf("Identifiant de l'etudiant : %d\n", e->identifiant);
-    printf("Specialite de l'etudiant : %s\n", e->specialite);
-    for(i = 0; i < NB_UV_MAX; i++) printf("UV %d de l'etudiant : %s\n", i+1, e->UV[i]);
-}
-
-void printListeEtudiant(etudiant *L)
-{
-    etudiant *e = L;
-    printf("\nAffichage de la liste : %s\n", L->nom);
-    while(e != NULL)
-    {
-        printEtudiant(e);
-        e = e->suivant;
-    }
-    printf("\t*****\n");
-}
-
 int exo55()
 {
     char c;
-    int n;
     printf("Operations sur les listes chainees :\n");
     etudiant *L, *GSM = NULL, *GSI = NULL, *ISI = NULL;
-    printf("(int)$ ");
-    scanf("%d", &n);
-    L = creerListe(n);
+    L = creerNouvelleListe();
     printListeEtudiant(L);
     while(1)
     {
-        printf("(char)$ ");
+        printf("\n(char)$ ");
         fflush(stdin);
         c = getchar();
         switch(c)
@@ -253,21 +266,24 @@ int exo55()
         case 'q' :
             return 0;
         case 'c' :
-            printf("(int)$ ");
-            scanf("%d", &n);
-            L = creerListe(n);
+            supprimerListe(L);
+            L = creerNouvelleListe();
+            printf("\nNouvelle liste :\n");
             printListeEtudiant(L);
             break;
         case 't' :
             trier(&L);
+            printf("\nNouvelle liste :\n");
             printListeEtudiant(L);
             break;
         case 'i' :
-            if(!insererEtudiant(&L, getDataEtudiant())) printf("E: Insertion impossible !\n");
+            if(!insererEtudiant(&L, getDataEtudiant(normal))) printf("\nE: Insertion impossible !\n");
+            printf("\nNouvelle liste :\n");
             printListeEtudiant(L);
             break;
         case 's' :
-            if(!supprimerEtudiant(&L, getDataEtudiant())) printf("E: Suppression impossible !\n");
+            if(!supprimerEtudiant(&L, getDataEtudiant(reduit))) printf("\nE: Suppression impossible !\n");
+            printf("\nNouvelle liste :\n");
             printListeEtudiant(L);
             break;
         case 'r' :
@@ -275,9 +291,13 @@ int exo55()
             supprimerListe(GSM);
             supprimerListe(ISI);
             recupererSelonSpecialite(L, &GSI, &GSM, &ISI);
+            printf("Liste originelle :\n");
             printListeEtudiant(L);
+            printf("Liste des etudiants GSI :\n");
             printListeEtudiant(GSI);
+            printf("Liste des etudiants GSM :\n");
             printListeEtudiant(GSM);
+            printf("Liste des etudiants ISI :\n");
             printListeEtudiant(ISI);
             break;
         case 'p' :
