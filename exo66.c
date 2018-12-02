@@ -20,14 +20,18 @@ element* newDoubleTable() {
 
 void afficherDoubleTable(element t[]) {
 	int i;
-	for (i = 0; i < 13; i++)
-		printf("%d %d %d\n", i, t[i].etat, t[i].nombre);
+	for (i = 0; i < 13; i++) {
+		printf("%d %d ", i, t[i].etat);
+		if (t[i].etat == occupe)
+			printf("%d", t[i].nombre);
+		printf("\n");
+	}
 }
 
 void insererDoubleTable(element t[], int nb) {
 	int i, index;
 	for (i = 0; i <= 10; i++) {
-		index = (nb % 13 + i * (1 + nb % 12))%13;
+		index = (nb % 13 + i * (1 + nb % 12)) % 13;
 		if (t[index].etat == libre) {
 			t[index].nombre = nb;
 			t[index].etat = occupe;
