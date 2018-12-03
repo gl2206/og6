@@ -1,23 +1,18 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-typedef struct element {
-	char nom[30];
-	struct element* suivant;
-} element;
+#include "TD10.h"
 
 void afficher(element *liste) {
 	element *e = liste;
+	int cpt = 0;
 	do {
-		printf("element: nom=%s\n", e->nom);
+		printf("element %03d : nom=%s\n", cpt++, e->nom);
 		e = e->suivant;
 	} while(e != liste);
+	printf("\t*****\n");
 }
 
 element* first_element(element *liste) {
 	element *e = (element*) malloc(sizeof(element));
-	printf("%x\n",e);
+	//printf("%x\n",e);
 	strcpy(e->nom, liste->nom);
 	e->suivant = e;
 	return e;
@@ -100,7 +95,7 @@ element *supprimer(element *liste, char nom[]) {
 	if(e == NULL) return NULL;
 	do {
 		if(!strcmp(e->nom, nom)) {
-			if(e == liste) { 
+			if(e == liste) {
 				do {
 					precedent = precedent->suivant;
 				} while(precedent->suivant != liste);
@@ -132,7 +127,7 @@ void remove_last(element *liste) {
 	free(e);
 }
 
-int main() {
+int exo58() {
 	int i;
 	char str[20];
 	element debut;
@@ -141,10 +136,11 @@ int main() {
 	printf("%d\n",taille(&debut));
 	printf("tata\n");
 	element* copie=first_element(&debut);
-	printf("ds main, %s %x %x\n",copie->nom, copie->suivant, copie);
+	//printf("ds main, %s %x %x\n",copie->nom, copie->suivant, copie);
 	printf("%d %d\n",taille(&debut),taille(copie));
 	afficher(copie);
-	printf("%x\n",remove_first(copie));
+	//printf("%x\n",remove_first(copie));
+	remove_first(copie);
 	copie=add_first(copie,"tyty");
 	copie=add_first(copie,"titi");
 	for(i=0;i<20;i++) {
@@ -155,8 +151,6 @@ int main() {
 	printf("%d\n",taille(copie));
 	copie=remove_first(copie);
 	afficher(copie);
-	
+
 	return 0;
 }
-
-
