@@ -49,6 +49,7 @@ void insererTable(Liste t[9], int nb) {
 }
 
 int exo65 () {
+    printf("Premiere table de hachage :\n");
 	Liste *t = newTable();
 	insererTable(t, 5);
 	insererTable(t, 28);

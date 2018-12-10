@@ -21,10 +21,9 @@ element* newDoubleTable() {
 void afficherDoubleTable(element t[]) {
 	int i;
 	for (i = 0; i < 13; i++) {
-		printf("%d %d ", i, t[i].etat);
-		if (t[i].etat == occupe)
-			printf("%d", t[i].nombre);
-		printf("\n");
+		printf("Case %02d (", i);
+		if (t[i].etat == occupe) printf("occupe) : %02d\n", t[i].nombre);
+        else printf("libre)  : --\n");
 	}
 }
 
@@ -42,6 +41,7 @@ void insererDoubleTable(element t[], int nb) {
 }
 
 int exo66() {
+    printf("Double hachage :\n\n");
 	element *t = newDoubleTable();
 	insererDoubleTable(t, 5);
 	insererDoubleTable(t, 28);
