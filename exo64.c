@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+#define WINDOWS
+HANDLE hConsole;
+#endif // defined(_WIN32) || defined(_WIN64)
+
 typedef struct element {
 	char caractere;
 	struct element *suivant;
@@ -9,7 +15,22 @@ typedef struct element {
 
 typedef element* Pile;
 
-Pile newPile() {
+void sgets(char *s, int l)
+{
+    int i;
+    char c;
+    fflush(stdin);
+    for(i = 0; i < l-1; i++)
+    {
+        c = getchar();
+        if(c == '\n')
+            break;
+        s[i] = c;
+    }
+    s[i] = '\0';
+}
+
+Pile nouvellePile() {
 	Pile p = NULL;
 	return p;
 }
@@ -45,10 +66,23 @@ char depiler(Pile *p) {
 	return c;
 }
 
+void localiserErreur(char *s, int i) {
+    int j;
+#ifdef WINDOWS
+    SetConsoleTextAttribute(hConsole, 12);
+#endif // WINDOWS
+    printf("\nE: Dans expression : %s\n", s);
+    printf("E: c=%02d              ", i+1);
+    for(j = 0; j < i; j++) {
+        putchar(' ');
+    }
+    printf("^\n");
+}
+
 void verifierParentheses(char *s) {
 	int i;
 	char c;
-	Pile p = newPile();
+	Pile p = nouvellePile();
 	for (i = 0; i < strlen(s); i++) {
 		if (isParentheseOuvrante(s[i]))
 			empiler(&p, s[i]);
@@ -57,29 +91,34 @@ void verifierParentheses(char *s) {
 			switch (c) {
 			case '(':
 				if (s[i] != ')') {
+                    localiserErreur(s, i);
 					printf("E: Erreur de parenthese !\n");
 					return;
 				}
 				break;
 			case '{':
 				if (s[i] != '}') {
+					localiserErreur(s, i);
 					printf("E: Erreur d'accolade !\n");
 					return;
 				}
 				break;
 			case '[':
 				if (s[i] != ']') {
+					localiserErreur(s, i);
 					printf("E: Erreur de crochet !\n");
 					return;
 				}
 				break;
 			case '<':
 				if (s[i] != '>') {
+                    localiserErreur(s, i);
 					printf("E: Erreur de chapeau !\n");
 					return;
 				}
 				break;
 			case '\0':
+			    localiserErreur(s, i);
 				printf("E: %c en trop !\n", s[i]);
 				return;
 			}
@@ -87,13 +126,23 @@ void verifierParentheses(char *s) {
 	}
 	c = depiler(&p);
 	if (c != '\0') {
-		printf("%c ouvert mais non ferme !\n", c);
+        localiserErreur(s, i);
+		printf("E: %c ouvert mais non ferme !\n", c);
 		return;
 	}
 }
 
 int exo64() {
-	char s[] = "sqrt(x^2+y^2";
+#ifdef WINDOWS
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+#endif // WINDOWS
+    printf("Expression correctement parenthesee :\n");
+	char s[50];
+	printf("\n(char[50])$ ");
+	sgets(s, 50);
 	verifierParentheses(s);
+#ifdef WINDOWS
+	SetConsoleTextAttribute(hConsole, 7);
+#endif // WINDOWS
 	return 0;
 }
