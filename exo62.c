@@ -55,10 +55,12 @@ int defilerPriorite(File *f) {
 }
 
 int exo62() {
+	printf("File d'attente avec priorite :\n);
+	int i;
 	File f = NULL;
-	for (int i = 0; i < 100; i++)
+	for (i = 0; i < 100; i++)
 		enfiler(&f, i, i);
-	for (int i = 0; i < 100; i++)
+	for (i = 0; i < 100; i++)
 		printf("%d ", defilerPriorite(&f));
 	return 0;
 }
